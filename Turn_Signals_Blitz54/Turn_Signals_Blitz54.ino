@@ -263,9 +263,6 @@ switch (digitalRead(BRAKE_INPUT)){
       isRightTap = false;
       HazardFlashingNoBrakes();
       break;
-      }
-    else{
-      break;
-      }      
+      } 
   }
 }
