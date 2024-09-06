@@ -24,3 +24,6 @@ Output Pins
 - Right Middle Light - 9
 - Right Outer Light - 10
 - Right Marker Lights - 11
+
+Thanks to Jason Saler for his initial project that I worked upon.
+https://github.com/jasonsaler/SequentialTL/tree/master
