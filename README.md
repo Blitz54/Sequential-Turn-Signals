@@ -1,7 +1,7 @@
 # Sequential-Turn-Signals
 Sequential turn signals for Pontiac Fiero, and other cars with 3 rear bulbs each side. Uses an Arduino Nano, an 8 relay module, 3 12v 4 pin car relays, and some lengths of wire.
 
-- Readme to be updated soon, this is just initial upload.
+![](https://github.com/Blitz54/Sequential-Turn-Signals/blob/main/Turn%20Signal%20Gif.gif)
 
 FEATURES
 - Sequential signals and brake logic.
