@@ -142,19 +142,19 @@ void RightOff(){
   RightLights(OFF,OFF,OFF,OFF);
 }
 
-void brakeInterrupt()
+void brakeInterrupt() //Should maybe add a Hazard interrupt, but its fast anyway so not too important.
 {
    // 1. Applying brakes
-   if(digitalRead(BRAKE_INPUT) == 0)
+   if(digitalRead(BRAKE_INPUT) == ON)
    {
-      // 1.2. Here is if the right turn signal and brake are on.
-      if( (digitalRead(LEFT_SIGNAL_INPUT) == 1) and ( (digitalRead(RIGHT_SIGNAL_INPUT) == 0) || (isRightTap) ) )
+      // 1.2. Brakes applied while Right signal is held on, or the tap sequence is running.
+      if( (digitalRead(LEFT_SIGNAL_INPUT) == OFF) and ( (digitalRead(RIGHT_SIGNAL_INPUT) == ON) || (isRightTap) ) )
       {         
         BrakesLeft();
       }
       
-      // 1.3. Now if the left turn signal and brake are both on
-      else if( (digitalRead(RIGHT_SIGNAL_INPUT) == 1) and ( (digitalRead(LEFT_SIGNAL_INPUT) == 0) || (isLeftTap) ) )
+      // 1.3. Brakes applied while Left signal is held on, or the tap sequence is running.
+      else if( (digitalRead(RIGHT_SIGNAL_INPUT) == OFF) and ( (digitalRead(LEFT_SIGNAL_INPUT) == ON) || (isLeftTap) ) )
       {
         BrakesRight();         
       }
@@ -162,16 +162,16 @@ void brakeInterrupt()
     // 2. Releasing Brakes
     else
     {       
-      // 2.2. Here is if the right turn signal is on and brake is released.
-      if( (digitalRead(LEFT_SIGNAL_INPUT) == 1) and ( (digitalRead(RIGHT_SIGNAL_INPUT) == 0) || (isRightTap) ) )
+      // 2.2. Brakes released while Right signal is held on, or the tap sequence is running.
+      if( (digitalRead(LEFT_SIGNAL_INPUT) == OFF) and ( (digitalRead(RIGHT_SIGNAL_INPUT) == ON) || (isRightTap) ) )
       {         
         LeftOff();
       }
       
-      // 2.3. Now if the left turn signal is on and brake is released.
-      else if( (digitalRead(RIGHT_SIGNAL_INPUT) == 1) and ( (digitalRead(LEFT_SIGNAL_INPUT) == 0) || (isLeftTap) ) )
+      // 2.3. Brakes released while Left signal is held on, or the tap sequence is running.
+      else if( (digitalRead(RIGHT_SIGNAL_INPUT) == OFF) and ( (digitalRead(LEFT_SIGNAL_INPUT) == ON) || (isLeftTap) ) )
       {
-        RightOff();              
+        RightOff();
       }
    }
 }
@@ -179,7 +179,7 @@ void brakeInterrupt()
 void loop() {
 switch (digitalRead(BRAKE_INPUT)){
   case 0: // Brakes on (grounded)
-    if ((digitalRead(LEFT_SIGNAL_INPUT) == 1) && (digitalRead(RIGHT_SIGNAL_INPUT) == 1)){ //if both signals are off, check if one was tapped.
+    if ((digitalRead(LEFT_SIGNAL_INPUT) == OFF) && (digitalRead(RIGHT_SIGNAL_INPUT) == OFF)){ //if both signals are off, check if one was tapped.
       if((LeftFlashCount > 0) && (LeftFlashCount < MAX_REPEAT_ON_TAP)){ //checks if left signal flashed 1 or 2 times. Flashers always flash 3 times, unless other direction is engaged.
         RightFlashCount = 0;
         isRightTap = false;
@@ -201,26 +201,26 @@ switch (digitalRead(BRAKE_INPUT)){
         break;
       }
     }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 1) && (digitalRead(RIGHT_SIGNAL_INPUT) == 0)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == OFF) && (digitalRead(RIGHT_SIGNAL_INPUT) == ON)){
       LeftFlashCount = 0;
       BrakesLeft();
       RightSequence();
       break;
       }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 0) && (digitalRead(RIGHT_SIGNAL_INPUT) == 1)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == ON) && (digitalRead(RIGHT_SIGNAL_INPUT) == OFF)){
       RightFlashCount = 0;
       BrakesRight();
       LeftSequence();
       break;
       }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 0) && (digitalRead(RIGHT_SIGNAL_INPUT) == 0)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == ON) && (digitalRead(RIGHT_SIGNAL_INPUT) == ON)){
       LeftFlashCount = 0;
       RightFlashCount = 0;
       HazardFlashingWithBrakes();
       break;
       }    
   case 1: //Brakes off (pin not grounded)
-    if ((digitalRead(LEFT_SIGNAL_INPUT) == 1) && (digitalRead(RIGHT_SIGNAL_INPUT) == 1)){
+    if ((digitalRead(LEFT_SIGNAL_INPUT) == OFF) && (digitalRead(RIGHT_SIGNAL_INPUT) == OFF)){ //No signals held, no brakes, check for tapped sequence count
       if((LeftFlashCount > 0) && (LeftFlashCount < MAX_REPEAT_ON_TAP)){
         RightFlashCount = 0;
         isRightTap = false;
@@ -242,21 +242,21 @@ switch (digitalRead(BRAKE_INPUT)){
         break;
       }
     }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 1) && (digitalRead(RIGHT_SIGNAL_INPUT) == 0)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == OFF) && (digitalRead(RIGHT_SIGNAL_INPUT) == ON)){
       LeftFlashCount = 0;
       isLeftTap = false;
       LeftOff();
       RightSequence();
       break;
       }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 0) && (digitalRead(RIGHT_SIGNAL_INPUT) == 1)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == ON) && (digitalRead(RIGHT_SIGNAL_INPUT) == OFF)){
       RightFlashCount = 0;
       isRightTap = false;
       RightOff();
       LeftSequence();
       break;
       }
-    else if((digitalRead(LEFT_SIGNAL_INPUT) == 0) && (digitalRead(RIGHT_SIGNAL_INPUT) == 0)){
+    else if((digitalRead(LEFT_SIGNAL_INPUT) == ON) && (digitalRead(RIGHT_SIGNAL_INPUT) == ON)){
       LeftFlashCount = 0;
       RightFlashCount = 0;
       isLeftTap = false;
